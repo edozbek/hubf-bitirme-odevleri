@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HUBF Bitirme Ödevleri Kütüphanesi</title>
+<style>
+  /* ============ HUBF Bitirme Ödevleri Kütüphanesi ============ */
+  #hubf-bok { --bordo:#9e1b32; --bordo-koyu:#7a1426; --acik:#faf7f7; --cizgi:#e6dcdc; --metin:#2b2b2b; --gri:#6b6462;
+    font-family:"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color:var(--metin);
+    max-width:1100px; margin:0 auto; padding:8px 12px 40px; line-height:1.5; }
+  #hubf-bok * { box-sizing:border-box; }
+  #hubf-bok .bok-baslik { border-bottom:3px solid var(--bordo); padding:14px 0 10px; margin-bottom:14px; }
+  #hubf-bok .bok-baslik h2 { margin:0; color:var(--bordo); font-size:1.45rem; font-weight:700; }
+  #hubf-bok .bok-baslik p { margin:4px 0 0; color:var(--gri); font-size:.9rem; }
+  #hubf-bok .bok-uyari { background:var(--acik); border:1px solid var(--cizgi); border-left:4px solid var(--bordo);
+    padding:8px 12px; font-size:.85rem; color:#54413f; border-radius:0 6px 6px 0; margin-bottom:14px; }
+  /* Kaynak kartları (esaslar, kılavuz, yükleme) */
+  #hubf-bok .bok-kaynaklar { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:10px; margin-bottom:16px; }
+  #hubf-bok .bok-kaynak { display:block; border:1px solid var(--cizgi); border-radius:8px; padding:12px 14px;
+    text-decoration:none; color:var(--metin); background:#fff; transition:all .15s; }
+  #hubf-bok .bok-kaynak:hover { border-color:var(--bordo); box-shadow:0 1px 5px rgba(0,0,0,.08); }
+  #hubf-bok .bok-kaynak strong { color:var(--bordo-koyu); display:block; font-size:.93rem; margin-bottom:2px; }
+  #hubf-bok .bok-kaynak small { color:var(--gri); font-size:.79rem; }
+  #hubf-bok .bok-kaynak.vurgulu { background:var(--bordo); border-color:var(--bordo); }
+  #hubf-bok .bok-kaynak.vurgulu:hover { background:var(--bordo-koyu); }
+  #hubf-bok .bok-kaynak.vurgulu strong { color:#fff; }
+  #hubf-bok .bok-kaynak.vurgulu small { color:#f0d7dc; }
+  #hubf-bok .bok-kaynak.bilgi { background:var(--acik); border-left:4px solid var(--bordo); cursor:default; }
+  #hubf-bok .bok-kaynak.bilgi:hover { border-color:var(--cizgi); border-left-color:var(--bordo); box-shadow:none; }
+  #hubf-bok .bok-kaynak.bilgi small { color:#54413f; }
+  /* Sekmeler */
+  #hubf-bok .bok-sekmeler { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  #hubf-bok .bok-sekme { border:1px solid var(--cizgi); background:#fff; color:var(--metin); padding:7px 14px;
+    border-radius:20px; cursor:pointer; font-size:.88rem; transition:all .15s; }
+  #hubf-bok .bok-sekme:hover { border-color:var(--bordo); color:var(--bordo); }
+  #hubf-bok .bok-sekme.aktif { background:var(--bordo); border-color:var(--bordo); color:#fff; font-weight:600; }
+  #hubf-bok .bok-sekme .adet { opacity:.75; font-size:.8em; margin-left:4px; }
+  /* Filtre satırı */
+  #hubf-bok .bok-filtreler { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  #hubf-bok .bok-filtreler input, #hubf-bok .bok-filtreler select { padding:8px 12px; border:1px solid var(--cizgi);
+    border-radius:6px; font-size:.9rem; font-family:inherit; background:#fff; color:var(--metin); }
+  #hubf-bok .bok-filtreler input:focus, #hubf-bok .bok-filtreler select:focus { outline:2px solid var(--bordo); outline-offset:0; border-color:var(--bordo); }
+  #hubf-bok .bok-ara { flex:1 1 240px; }
+  /* Liste */
+  #hubf-bok .bok-grup-baslik { color:var(--bordo-koyu); font-size:1.05rem; font-weight:700; margin:22px 0 8px;
+    padding-bottom:4px; border-bottom:1px solid var(--cizgi); }
+  #hubf-bok .bok-kart { display:flex; gap:14px; align-items:flex-start; background:#fff; border:1px solid var(--cizgi);
+    border-radius:8px; padding:12px 16px; margin-bottom:8px; }
+  #hubf-bok .bok-kart:hover { border-color:#cbb3b8; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+  #hubf-bok .bok-kart-govde { flex:1; min-width:0; }
+  #hubf-bok .bok-kart-baslik { font-weight:600; font-size:.98rem; margin:0 0 3px; color:var(--metin); }
+  #hubf-bok .bok-kart-detay { font-size:.84rem; color:var(--gri); }
+  #hubf-bok .bok-kart-detay span+span::before { content:"·"; margin:0 6px; color:#c9bfbf; }
+  #hubf-bok .bok-rozet { display:inline-block; font-size:.72rem; font-weight:600; padding:2px 8px; border-radius:10px;
+    background:var(--acik); color:var(--bordo-koyu); border:1px solid #e3cdd2; margin-right:6px; vertical-align:1px; }
+  #hubf-bok .bok-goruntule { flex-shrink:0; align-self:center; text-decoration:none; background:var(--bordo); color:#fff;
+    padding:7px 16px; border-radius:6px; font-size:.85rem; font-weight:600; white-space:nowrap; }
+  #hubf-bok .bok-goruntule:hover { background:var(--bordo-koyu); color:#fff; }
+  #hubf-bok .bok-goruntule.coklu { background:#fff; color:var(--bordo); border:1px solid var(--bordo); margin-left:6px; }
+  #hubf-bok .bok-bos { text-align:center; color:var(--gri); padding:40px 0; font-size:.95rem; }
+  #hubf-bok .bok-alt { margin-top:20px; font-size:.78rem; color:#9a908e; text-align:right; }
+  @media (max-width:640px){
+    #hubf-bok .bok-kart { flex-direction:column; gap:8px; }
+    #hubf-bok .bok-goruntule { align-self:stretch; text-align:center; }
+  }
+</style>
+</head>
+<body>
+<div id="hubf-bok">
+  <div class="bok-baslik">
+    <h2>Bitirme Ödevleri Kütüphanesi</h2>
+    <p>Havacılık ve Uzay Bilimleri Fakültesi bitirme ödevi kapsamındaki uygulama derslerinde tamamlanan çalışmaların dijital arşivi</p>
+  </div>
+  <div class="bok-kaynaklar">
+    <a class="bok-kaynak" href="https://hubf.eskisehir.edu.tr/Uploads/hubf/files/y%c3%bcr%c3%bcrl%c3%bckterev2_%202026_Bitirme%c3%96devi_UygulamaEsaslari.pdf" target="_blank" rel="noopener">
+      <strong>Bitirme Ödevi Uygulama Esasları</strong>
+      <small>Usul ve esaslar belgesi (PDF)</small>
+    </a>
+    <a class="bok-kaynak" href="https://hubf.eskisehir.edu.tr/Uploads/hubf/files/docs/form-ogrenci/BitOdvKlvz_rapor_2022-2023.pdf" target="_blank" rel="noopener">
+      <strong>Detaylı Araştırma Raporu Kılavuzu</strong>
+      <small>Rapor formatı için yazım kılavuzu (PDF)</small>
+    </a>
+    <a class="bok-kaynak vurgulu" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=8UBI4nHBB0CuLf_Hc_MRn8FNoUxm5wNHjyZMUznCPYJUNk5BMlpWRTNZVFVKNFU3Q1pGSTdXSVVCSyQlQCN0PWcu" target="_blank" rel="noopener">
+      <strong>Bitirme Ödevini Yükle</strong>
+      <small>ESTÜ hesabınızla oturum açarak teslim edin</small>
+    </a>
+    <div class="bok-kaynak bilgi">
+      <strong>Görüntüleme Erişimi</strong>
+      <small>Çalışma dosyalarını görüntülemek için ESTÜ hesabınızla (@eskisehir.edu.tr / @ogr.eskisehir.edu.tr) oturum açmanız gerekmektedir.</small>
+    </div>
+  </div>
+  <div class="bok-sekmeler" id="bokSekmeler"></div>
+  <div class="bok-filtreler">
+    <input type="search" class="bok-ara" id="bokAra" placeholder="Başlık, öğrenci veya danışman ara…">
+    <select id="bokYil"><option value="">Tüm Yıllar</option></select>
+    <select id="bokFormat">
+      <option value="">Tüm Formatlar</option>
+      <option value="A">A) Detaylı Araştırma Raporu</option>
+      <option value="B">B) Konferans Bildirisi</option>
+      <option value="C">C) Öğrenci Sempozyumu</option>
+      <option value="D">D) TÜBİTAK 2209 vb. Proje</option>
+    </select>
+  </div>
+  <div id="bokListe"></div>
+  <div class="bok-alt" id="bokAlt"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  /* AYARLAR: dataUrl kayitlarin cekildigi adrestir. Bu adrese ulasilamazsa
+     sayfa asagidaki ORNEK verileri gosterir (isimleri maskeli 6 kayit). */
+  var CONFIG = { dataUrl: "https://edozbek.github.io/hubf-bitirme-odevleri/odevler.json" };
+
+  var BOLUMLER = [
+    { kod:"HEE",  ad:"Havacılık Elektrik ve Elektroniği" },
+    { kod:"UGMB", ad:"Uçak Gövde ve Motor Bakımı" },
+    { kod:"HY",   ad:"Havacılık Yönetimi" },
+    { kod:"HTK",  ad:"Hava Trafik Kontrolü" },
+    { kod:"HUM",  ad:"Havacılık ve Uzay Mühendisliği" }
+  ];
+  var DERS_BOLUM = { "HEE446":"HEE", "UGB415":"UGMB", "HYO434":"HY", "HTK433":"HTK", "HTK438":"HTK", "UZY401":"HUM", "UZY402":"HUM" };
+  var FORMAT_AD = { "A":"Araştırma Raporu", "B":"Konferans Bildirisi", "C":"Öğrenci Sempozyumu", "D":"TÜBİTAK 2209 Projesi" };
+
+  /* ÖRNEK VERİ (gerçek sistem bağlanınca kullanılmaz) */
+  var ORNEK = [
+    { teslimTarihi:"2026-06-05", ders:"UZY402", ogrenci:"A** K***", danisman:"Dr. Öğr. Üyesi Örnek Danışman", baslik:"Sabit Kanatlı İHA'larda Çok Motorlu İtki Konfigürasyonlarının Karşılaştırılması", format:"A", linkler:["#ornek"] },
+    { teslimTarihi:"2026-06-12", ders:"HEE446", ogrenci:"B** Y***", danisman:"Doç. Dr. Örnek Hoca", baslik:"Uçak Kablo Demetlerinde Arıza Tespiti için Yansıma Ölçüm Yöntemleri", format:"B", linkler:["#ornek"] },
+    { teslimTarihi:"2026-06-08", ders:"HTK438", ogrenci:"C** D***", danisman:"Öğr. Gör. Örnek Eleman", baslik:"Terminal Sahasında Kapasite Analizi: Eskişehir Örneği", format:"C", linkler:["#ornek"] },
+    { teslimTarihi:"2026-05-29", ders:"HYO434", ogrenci:"D** A***", danisman:"Dr. Öğr. Üyesi Örnek Danışman", baslik:"Havayolu İş Modellerinin Yolcu Memnuniyetine Etkisi", format:"D", linkler:["#ornek"] },
+    { teslimTarihi:"2026-01-09", ders:"UGB415", ogrenci:"E** S***", danisman:"Öğr. Gör. Örnek Eleman", baslik:"Turbofan Motorlarda Borescope Muayene Bulgularının Sınıflandırılması", format:"A", linkler:["#ornek"] },
+    { teslimTarihi:"2025-12-19", ders:"UZY401", ogrenci:"F** T***", danisman:"Prof. Dr. Örnek Hoca", baslik:"Hidrojen Yakıt Hücreli İHA için Ön Tasarım Çalışması", format:"B", linkler:["#ornek"] }
+  ];
+
+  var veri = [], guncelleme = "";
+  var durum = { bolum:"", ara:"", yil:"", format:"" };
+
+  function kacir(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+
+  function bolumBul(k){ if(k.bolum) return k.bolum; var d=String(k.ders||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6); return DERS_BOLUM[d]||""; }
+
+  function sekmeCiz(){
+    var el=document.getElementById("bokSekmeler"), html="";
+    var say={}; veri.forEach(function(k){ var b=bolumBul(k); say[b]=(say[b]||0)+1; });
+    html+='<button class="bok-sekme'+(durum.bolum===""?" aktif":"")+'" data-b="">Tümü <span class="adet">('+veri.length+')</span></button>';
+    BOLUMLER.forEach(function(b){
+      html+='<button class="bok-sekme'+(durum.bolum===b.kod?" aktif":"")+'" data-b="'+b.kod+'" title="'+kacir(b.ad)+'">'+b.kod+' <span class="adet">('+(say[b.kod]||0)+')</span></button>';
+    });
+    el.innerHTML=html;
+    el.querySelectorAll(".bok-sekme").forEach(function(btn){
+      btn.addEventListener("click", function(){ durum.bolum=btn.getAttribute("data-b"); sekmeCiz(); listeCiz(); });
+    });
+  }
+
+  function tarihAl(k){ var t=String(k.teslimTarihi||k.tarih||""); return /^\d{4}-\d{2}-\d{2}/.test(t)?t.slice(0,10):""; }
+  function tarihYaz(k){ var t=tarihAl(k); return t?t.slice(8,10)+"."+t.slice(5,7)+"."+t.slice(0,4):""; }
+  function yilAl(k){ var t=tarihAl(k); return t?t.slice(0,4):""; }
+
+  function yilDoldur(){
+    var sel=document.getElementById("bokYil"), set={};
+    veri.forEach(function(k){ var y=yilAl(k); if(y) set[y]=1; });
+    var ler=Object.keys(set).sort().reverse();
+    sel.innerHTML='<option value="">Tüm Yıllar</option>'+ler.map(function(d){ return '<option value="'+kacir(d)+'">'+kacir(d)+"</option>"; }).join("");
+  }
+
+  function listeCiz(){
+    var kutu=document.getElementById("bokListe");
+    var q=durum.ara.toLocaleLowerCase("tr");
+    var f=veri.filter(function(k){
+      if(durum.bolum && bolumBul(k)!==durum.bolum) return false;
+      if(durum.yil && yilAl(k)!==durum.yil) return false;
+      if(durum.format && String(k.format||"").toUpperCase().charAt(0)!==durum.format) return false;
+      if(q){ var m=(k.baslik||"")+" "+(k.ogrenci||"")+" "+(k.danisman||"")+" "+(k.ders||"");
+        if(m.toLocaleLowerCase("tr").indexOf(q)===-1) return false; }
+      return true;
+    });
+    if(!f.length){ kutu.innerHTML='<div class="bok-bos">Bu ölçütlere uyan çalışma bulunamadı.</div>'; return; }
+    var html="";
+    BOLUMLER.forEach(function(b){
+      var grup=f.filter(function(k){ return bolumBul(k)===b.kod; });
+      if(!grup.length) return;
+      grup.sort(function(x,y){ return tarihAl(y).localeCompare(tarihAl(x)) || String(x.ogrenci||"").localeCompare(String(y.ogrenci||""),"tr"); });
+      html+='<div class="bok-grup-baslik">'+kacir(b.ad)+' Bölümü <span style="font-weight:400;color:#9a908e;">('+grup.length+' çalışma)</span></div>';
+      grup.forEach(function(k){
+        var fk=String(k.format||"").toUpperCase().charAt(0);
+        var linkler=(k.linkler&&k.linkler.length?k.linkler:(k.link?[k.link]:[]));
+        var butonlar=linkler.map(function(u,i){
+          return '<a class="bok-goruntule'+(i>0?" coklu":"")+'" href="'+kacir(u)+'" target="_blank" rel="noopener">'+(i===0?"Görüntüle":"Ek "+i)+"</a>";
+        }).join("");
+        html+='<div class="bok-kart"><div class="bok-kart-govde">'
+          +'<p class="bok-kart-baslik">'+kacir(k.baslik||"(Başlık belirtilmemiş)")+'</p>'
+          +'<div class="bok-kart-detay">'
+          +(FORMAT_AD[fk]?'<span class="bok-rozet">'+FORMAT_AD[fk]+"</span>":"")
+          +'<span>'+kacir(k.ogrenci||"")+"</span>"
+          +'<span>Danışman: '+kacir(k.danisman||"-")+"</span>"
+          +'<span>'+kacir(k.ders||"")+"</span>"
+          +(tarihYaz(k)?'<span>'+tarihYaz(k)+"</span>":"")
+          +"</div></div>"+butonlar+"</div>";
+      });
+    });
+    kutu.innerHTML=html;
+  }
+
+  function altYaz(kaynak){
+    document.getElementById("bokAlt").textContent =
+      (guncelleme?("Son güncelleme: "+guncelleme+" | "):"")+kaynak;
+  }
+
+  function baslat(kayitlar, kaynak){
+    veri=(kayitlar||[]).filter(function(k){ return k && (k.baslik||k.ogrenci); });
+    sekmeCiz(); yilDoldur(); listeCiz(); altYaz(kaynak);
+  }
+
+  document.getElementById("bokAra").addEventListener("input", function(e){ durum.ara=e.target.value.trim(); listeCiz(); });
+  document.getElementById("bokYil").addEventListener("change", function(e){ durum.yil=e.target.value; listeCiz(); });
+  document.getElementById("bokFormat").addEventListener("change", function(e){ durum.format=e.target.value; listeCiz(); });
+
+  if(CONFIG.dataUrl){
+    fetch(CONFIG.dataUrl+(CONFIG.dataUrl.indexOf("?")===-1?"?":"&")+"v="+Date.now())
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(j){ guncelleme=j.guncelleme||""; baslat(j.kayitlar||j, "HUBF Bitirme Ödevleri Kütüphanesi"); })
+      .catch(function(){ baslat(ORNEK, "Veri kaynağına ulaşılamadı, örnek kayıtlar gösteriliyor."); });
+  } else {
+    baslat(ORNEK, "ÖRNEK VERİ: sistem henüz canlı veriye bağlanmadı.");
+  }
+})();
+</script>
+</body>
+</html>
